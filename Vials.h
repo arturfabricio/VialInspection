@@ -9,8 +9,13 @@ using namespace std;
 #ifndef VIALS_H 
 #define VIALS_H
 
-class collectData {
+class inspectVial {
 public:
+	void classify(cv::Mat vial);
+	void loadDataTop();
+	void loadDataBottom();
+	void loadDataCrack();
+	void loadDataScratch();
 	void alldata(cv::Mat vial);
 	cv::Mat rotate(cv::Mat src, double angle);
 
@@ -222,34 +227,45 @@ public:
 	cv::Mat vial210 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\169_Color.png");
 	cv::Mat vial211 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\170_Color.png");
 	cv::Mat vial212 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\171_Color.png");
-	
+
 private:
-	
-	struct Vialfeatures			//In this struct we declare the features for the detection of the vial
-	{
-		int contourIndex;
-		int area;				//Describes the area
-		int perimeter;          //Describes the perimeter
-		int idx;				//Variable we will use later (will be explained)
-		float circularity;		//This one describes the circularity "intensity", meaning the value will be higher the rounder the object is   
-		bool hasCrack;			//Describes wether or not the object has a hole/crack         
-		float elongation;		//Descibes the lenght
-	};
+	float top[1][3];
+	float bottom[1][3];
+	float crack[1][3];
+	float scratch[1][3];
 
 	struct boundingBox
 	{
-		int x;					//These are the parameters for the bounding box we'll use later. On OpenCV the boxes are drawn using the Rect function
-		int y;					//whose variables are the 4 values seen below. The x and y describe the top left corner where the box starts and
-		int h;				//the values h and w describe the height and weight, respectively, of the bounding box.
+		int x;					
+		int y;					
+		int h;				
 		int w;
 	};
 
-};
+	struct Vialfeatures
+	{
+		int contourIndex;
+		int area;
+		int perimeter;
+		int idx;
+		float circularity;
+		bool hasCrack;
+		float elongation;
+	};
 
-class inspectVial {
+	vector<Vialfeatures> featVec1;
 
-	void classify(cv::Mat vial);
-	void loadData();
+	vector<int> areaVec;
+	vector<int> perimeterVec;
+	vector<float> circularityVec;
+	vector<float> elongationVec;
+
+	cv::Mat ContourIMG;
+	cv::Mat drawingfinal;
+	cv::Mat rotated;
+	cv::Mat everything;
+	vector<vector<cv::Point>> G1contours;
+
 };
 
 #endif

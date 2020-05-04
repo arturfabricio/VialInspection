@@ -8,10 +8,9 @@
 #include <sstream>
 #include<string>
 
-//using namespace cv;
 using namespace std;
 
-void collectData::alldata(cv::Mat vial) {
+void inspectVial::alldata(cv::Mat vial) {
 	
 	///////////////////////////////////////////////////
 	/////////ROTATION//////////////////////////////////
@@ -168,9 +167,9 @@ void collectData::alldata(cv::Mat vial) {
 
 	cv::findContours(contour_ROI, GcontoursTop2, hierarchyTop2, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
 	cv::drawContours(Contour, GcontoursTop2, -1, cv::Scalar(0, 0, 0), 1);
-	imshow("Contour", Contour);
-	cv::waitKey(0);
-	cv::destroyAllWindows;
+	//imshow("Contour", Contour);
+	//cv::waitKey(0);
+	//cv::destroyAllWindows;
 
 	cv::findContours(rotated_morph1, GcontoursTop, hierarchyTop, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
 	cv::drawContours(ContourBig, GcontoursTop, -1, cv::Scalar(0, 0, 0), 1);
@@ -290,9 +289,9 @@ void collectData::alldata(cv::Mat vial) {
 
 	cv::findContours(contour_ROI2, GcontoursBot2, hierarchyBot2, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
 	cv::drawContours(Contour2, GcontoursBot2, -1, cv::Scalar(0, 0, 0), 1);
-	imshow("Contour2", Contour2);
-	cv::waitKey(0);
-	cv::destroyAllWindows;
+	//imshow("Contour2", Contour2);
+	//cv::waitKey(0);
+	//cv::destroyAllWindows;
 
 	cv::findContours(cadstmorph3, GcontoursBot, hierarchyBot, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
 	cv::drawContours(ContourBig2, GcontoursBot, -1, cv::Scalar(0, 0, 0), 1);
@@ -387,7 +386,7 @@ void collectData::alldata(cv::Mat vial) {
 		rectangle(drawing1, boundRectBot[i].tl(), boundRectBot[i].br(), color1, 1, 8, 0);
 		y2 = boundRectBot[i].y;
 		h = boundRectBot[i].height;
-		G.h = y2 - y1 + h - 22;
+		G.h = y2 - y1 + h - 15;
 	};
 
 	
@@ -400,12 +399,16 @@ void collectData::alldata(cv::Mat vial) {
 	cv::Mat vial_Thresh = cv::Mat(vial_ROI.size(), CV_8U);
 	cv::Mat Contour1 = cv::Mat(vial_ROI.size(), CV_8U, cv::Scalar(255, 255, 255));
 
+	cv::Mat medianBlur = cv::Mat(vial_ROI.size(), CV_8U);
+	cv::medianBlur(vial_ROI, medianBlur, 3);
+
+
 	for (int x = 0; x < vial_ROI.cols; x++) {
 		for (int y = 0; y < vial_ROI.rows; y++) {
 			for (int c = 0; c < 3; c++) {
-				float alpha = 1.15;
-				float beta = 150;
-				int E = vial_ROI.at<cv::Vec3b>(cv::Point(x, y))[c];
+				float alpha = 1.85;
+				float beta = 100;
+				int E = medianBlur.at<cv::Vec3b>(cv::Point(x, y))[c];
 				vial_Contrast.at<uchar>(cv::Point(x, y)) = alpha * E + beta;
 			}
 		}
@@ -418,14 +421,12 @@ void collectData::alldata(cv::Mat vial) {
 	cv::threshold(vial_Contrast, vial_Thresh, 80, 255, cv::THRESH_BINARY_INV);
 
 	cv::Mat vial_morph1 = cv::Mat(vial_ROI.size(), CV_8U);
-	cv::Mat ElemClose = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(21, 21));
+	cv::Mat ElemClose = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(23, 23));
 	cv::morphologyEx(vial_Thresh, vial_morph1, cv::MORPH_CLOSE, ElemClose);
 
 	cv::Mat vial_morph2 = cv::Mat(vial_ROI.size(), CV_8U);
-	cv::Mat ElemErode1 = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2, 2));
+	cv::Mat ElemErode1 = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(2, 2));
 	cv::morphologyEx(vial_morph1, vial_morph2, cv::MORPH_ERODE, ElemErode1);
-
-	vector<vector<cv::Point>> G1contours;
 	vector<cv::Vec4i> hierarchy1;
 
 	cv::Mat GContour1 = cv::Mat(vial_ROI.size(), CV_8U);
@@ -433,7 +434,6 @@ void collectData::alldata(cv::Mat vial) {
 	cv::findContours(vial_morph2, G1contours, hierarchy1, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
 	cv::drawContours(GContour1, G1contours, -1, cv::Scalar(0, 0, 0), 1);
 
-	vector<Vialfeatures> featVec1;
 	for (int i = 0; i < G1contours.size(); i++)
 	{
 		if (hierarchy1[i][3] == -1)
@@ -450,9 +450,13 @@ void collectData::alldata(cv::Mat vial) {
 
 			cout << "G1.Area:" << G1.area << "; G1.Perimeter:" << G1.perimeter << "; G1.Circularity:" << G1.circularity << "; G1.Cracks:" << G1.hasCrack << "; G1.Elongation:" << G1.elongation << endl;
 			featVec1.push_back(G1);
+
+			areaVec.push_back(G1.area);
+			perimeterVec.push_back(G1.perimeter);
+			circularityVec.push_back(G1.circularity);
+			elongationVec.push_back(G1.elongation);
 		}
 	}
-
 
 	/*
 	imshow("Original Image", vial);
@@ -487,8 +491,6 @@ void collectData::alldata(cv::Mat vial) {
 	imshow("Region of interest", contour_ROI);
 	waitKey(0);
 	destroyAllWindows;
-	
-
 	imshow("Region of interest BIG", ContourBig);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
@@ -519,46 +521,48 @@ void collectData::alldata(cv::Mat vial) {
 	imshow("Contour 2", Contour2);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
-	*/
 	imshow("Top Contour", drawing);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
 	imshow("Bot Contour", drawing1);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
+	*/
 	imshow("ROI Image", vial_ROI);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
 	/*
+	imshow("Median Blur", medianBlur);
+	cv::waitKey(0);
+	cv::destroyAllWindows;
 	imshow("Adjust Contrast and Brightness", vial_Contrast);
-	waitKey(0);
-	destroyAllWindows;
+	cv::waitKey(0);
+	cv::destroyAllWindows;
 	imshow("Threshold", vial_Thresh);
-	waitKey(0);
-	destroyAllWindows;
+	cv::waitKey(0);
+	cv::destroyAllWindows;
 	imshow("Opening", vial_morph1);
-	waitKey(0);
-	destroyAllWindows;
+	cv::waitKey(0);
+	cv::destroyAllWindows;
 	imshow("Erode", vial_morph2);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
 	imshow("Contours", Contour);
-    waitKey(0);
-	destroyAllWindows;
+	cv::waitKey(0);
+	cv::destroyAllWindows;
 	imshow("Contours IMG", ContourIMG);
-	waitKey(0);
-	destroyAllWindows;
+	cv::waitKey(0);
+	cv::destroyAllWindows;
 	*/
 	imshow("Contours1", GContour1);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
-
 	//imshow("Contours IMG1", ContourIMG1);
 	//waitKey(0);
 	//destroyAllWindows;
 }
 
-cv::Mat collectData::rotate(cv::Mat src, double angle) {
+cv::Mat inspectVial::rotate(cv::Mat src, double angle) {
 	cv::Mat dst;
 	cv::Point2f pt(src.cols / 2., src.rows / 2.);
 	cv::Mat r = getRotationMatrix2D(pt, angle, 1.0);
@@ -567,25 +571,623 @@ cv::Mat collectData::rotate(cv::Mat src, double angle) {
 }
 
 void inspectVial::classify(cv::Mat vial) {
+	int k;
 
-};
+	cout << "To how many neighbours would you like to look at? (Choose a number between 1 and 11): ";
+	cin >> k;
+	cout << " " << endl;
+	if (k > 11 || k < 1) {
+		cout << "Please try again with a number between 1 and 11: ";
+		cin >> k;
+		cout << " " << endl;
+	}
+	else {
+		cout << "The algorithm will look at the " << k << " nearest neighbours." << endl;
+		cout << "  " << endl;
+	}
 
-/*
-void inspectVial::loadData() {
-	std::ifstream in("tbd");
+	//After that we enter in a for loop for each BLOB previously detected.
+	for (int o = 0; o < areaVec.size(); o++) {
+
+		//All the values are normalized.
+		double x = areaVec[o] / perimeterVec[o];
+		double y = circularityVec[o];
+		double z = elongationVec[o];
+
+		vector<double> distancesTop;
+		vector<double> distancesBottom;
+		vector<double> distancesCrack;
+		vector<double> distancesScratch;
+
+		vector<double> all;
+		vector<int> allks;
+
+		for (int i = 0; i < 1; i++) {
+			double dist;
+			dist = sqrt(((x - top[i][0]) * (x - top[i][0])) + ((y - top[i][1]) * (y - top[i][1])) + ((z - top[i][2]) * (z - top[i][2])));
+			all.push_back(dist);
+			distancesTop.push_back(dist);
+		};
+
+		for (int i = 0; i < 1; i++) {
+			double dist;
+			dist = sqrt(((x - bottom[i][0]) * (x - bottom[i][0])) + ((y - bottom[i][1]) * (y - bottom[i][1])) + ((z - bottom[i][2]) * (z - bottom[i][2])));
+			all.push_back(dist);
+			distancesBottom.push_back(dist);
+		};
+
+		for (int i = 0; i < 1; i++) {
+			double dist;
+			dist = sqrt(((x - crack[i][0]) * (x - crack[i][0])) + ((y - crack[i][1]) * (y - crack[i][1])) + ((z - crack[i][2]) * (z - crack[i][2])));
+			all.push_back(dist);
+			distancesCrack.push_back(dist);
+		};
+
+		for (int i = 0; i < 1; i++) {
+			double dist;
+			dist = sqrt(((x - scratch[i][0]) * (x - scratch[i][0])) + ((y - scratch[i][1]) * (y - scratch[i][1])) + ((z - scratch[i][2]) * (z - scratch[i][2])));
+			all.push_back(dist);
+			distancesScratch.push_back(dist);
+		};
+
+		int i;
+		double first, second, third, fourth, fifth, sixth, seventh, eight, ninth, tenth, eleventh;
+		first, second, third, fourth, fifth, sixth, seventh, eight, ninth, tenth, eleventh = INT_MAX;
+
+		if (k >= 1) {
+			first = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < first)
+				{
+					first = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), first);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), first) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), first) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), first) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), first) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		if (k >= 2) {
+			second = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < second)
+				{
+					second = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), second);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), second) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), second) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), second) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), second) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		if (k >= 3) {
+			third = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < third)
+				{
+					third = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), third);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), third) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), third) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), third) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), third) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		if (k >= 4) {
+			fourth = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < fourth)
+				{
+					fourth = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), fourth);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), fourth) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), fourth) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), fourth) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), fourth) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		if (k >= 5) {
+			fifth = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < fifth)
+				{
+					fifth = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), fifth);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), fifth) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), fifth) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), fifth) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), fifth) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		if (k >= 6) {
+			sixth = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < sixth)
+				{
+					sixth = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), sixth);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), sixth) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), sixth) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), sixth) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), sixth) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		if (k >= 7) {
+			seventh = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < seventh)
+				{
+					seventh = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), seventh);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), seventh) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), seventh) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), seventh) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), seventh) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		if (k >= 8) {
+			eight = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < eight)
+				{
+					eight = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), eight);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), eight) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), eight) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), eight) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), eight) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		if (k >= 9) {
+			ninth = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < ninth)
+				{
+					ninth = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), ninth);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), ninth) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), ninth) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), ninth) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), ninth) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		if (k >= 10) {
+			tenth = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < tenth)
+				{
+					tenth = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), tenth);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), tenth) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), tenth) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), tenth) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), tenth) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		if (k >= 11) {
+			eleventh = INT_MAX;
+			for (i = 0; i < all.size(); i++)
+			{
+				if (all[i] < eleventh)
+				{
+					eleventh = all[i];
+				}
+			};
+			vector<double>::iterator it = remove(all.begin(), all.end(), eleventh);
+			all.erase(it, all.end());
+
+			bool existsTop = std::find(std::begin(distancesTop), std::end(distancesTop), eleventh) != std::end(distancesTop);
+			bool existsBot = std::find(std::begin(distancesBottom), std::end(distancesBottom), eleventh) != std::end(distancesBottom);
+			bool existsCrack = std::find(std::begin(distancesCrack), std::end(distancesCrack), eleventh) != std::end(distancesCrack);
+			bool existsScratch = std::find(std::begin(distancesScratch), std::end(distancesScratch), eleventh) != std::end(distancesScratch);
+
+			if (existsTop == 1) {
+				allks.push_back(0);
+			}
+
+			if (existsBot == 1) {
+				allks.push_back(1);
+			}
+
+			if (existsCrack == 1) {
+				allks.push_back(2);
+			}
+
+			if (existsScratch == 1) {
+				allks.push_back(3);
+			}
+		};
+
+		int topcount = std::count(allks.begin(), allks.end(), 0);
+		int bottomcount = std::count(allks.begin(), allks.end(), 1);
+		int crackcount = std::count(allks.begin(), allks.end(), 2);
+		int scratchcount = std::count(allks.begin(), allks.end(), 3);
+
+		int top;
+		int bottom;
+		int crack;
+		int scratch;
+
+		top = bottom = crack = scratch = INT_MAX;
+
+		if (topcount > bottomcount && topcount > crackcount && topcount > scratchcount) {
+			cout << "For values " << x << ", " << y << " and " << z << " the green box represents the top of the vial!" << endl;
+
+			for (int i = 0; i < featVec1.size(); i++)
+			{
+				if (featVec1[i].circularity == circularityVec[o])
+				{
+					cv::drawContours(ContourIMG, G1contours, featVec1[i].contourIndex, cv::Scalar(0, 255, 0), 1);
+					top = featVec1[i].contourIndex;
+					vector<cv::Rect> boundtop(featVec1.size());
+					for (int i = 0; i < featVec1.size(); i++)
+					{
+						boundtop[i] = boundingRect(cv::Mat(G1contours[top]));
+					}
+					for (int i = 0; i < featVec1.size(); i++)
+					{
+						cv::Scalar green = cv::Scalar(0, 255, 0);
+						rectangle(drawingfinal, boundtop[i].tl(), boundtop[i].br(), green, 1, 8, 0);
+						cv::putText(drawingfinal, "Top", cv::Point(boundtop[i].x, boundtop[i].y + boundtop[i].width + 25), cv::FONT_HERSHEY_SIMPLEX, 1, CV_RGB(0, 255, 0), 2);
+
+					}
+				}
+			}
+		}
+
+		if (bottomcount > topcount && bottomcount > crackcount && bottomcount > scratchcount) {
+			cout << "For values " << x << ", " << y << " and " << z << " the green box represents the bottom of the vial!" << endl;
+
+			for (int i = 0; i < featVec1.size(); i++)
+			{
+				if (featVec1[i].circularity == circularityVec[o])
+				{
+					cv::drawContours(ContourIMG, G1contours, featVec1[i].contourIndex, cv::Scalar(0, 255, 0), 1);
+					bottom = featVec1[i].contourIndex;
+					vector<cv::Rect> boundbottom(featVec1.size());
+					for (int i = 0; i < featVec1.size(); i++)
+					{
+						boundbottom[i] = boundingRect(cv::Mat(G1contours[bottom]));
+					}
+					for (int i = 0; i < featVec1.size(); i++)
+					{
+						cv::Scalar green = cv::Scalar(0, 255, 0);
+						rectangle(drawingfinal, boundbottom[i].tl(), boundbottom[i].br(), green, 1, 8, 0);
+						cv::putText(drawingfinal, "Bottom", cv::Point(boundbottom[i].x, boundbottom[i].y + boundbottom[i].width + 25), cv::FONT_HERSHEY_SIMPLEX, 1, CV_RGB(0, 255, 0), 2);
+					}
+				}
+			}
+		}
+
+		if (crackcount > topcount && crackcount > bottomcount && crackcount > scratchcount) {
+			cout << "For values " << x << ", " << y << " and " << z << " the red box represents a crack on the vial!" << endl;
+
+			for (int i = 0; i < featVec1.size(); i++)
+			{
+				if (featVec1[i].circularity == circularityVec[o])
+				{
+					cv::drawContours(ContourIMG, G1contours, featVec1[i].contourIndex, cv::Scalar(0, 255, 0), 1);
+					crack = featVec1[i].contourIndex;
+					vector<cv::Rect> boundcrack(featVec1.size());
+					for (int i = 0; i < featVec1.size(); i++)
+					{
+						boundcrack[i] = boundingRect(cv::Mat(G1contours[crack]));
+					}
+					for (int i = 0; i < featVec1.size(); i++)
+					{
+						cv::Scalar red = cv::Scalar(0, 0, 255);
+						rectangle(drawingfinal, boundcrack[i].tl(), boundcrack[i].br(), red, 1, 8, 0);
+						cv::putText(drawingfinal, "Crack", cv::Point(boundcrack[i].x, boundcrack[i].y + boundcrack[i].width + 25), cv::FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255, 0, 0), 2);
+					}
+				}
+			}
+		}
+
+		if (scratchcount > topcount && scratchcount > bottomcount && scratchcount > crackcount) {
+			cout << "For values " << x << ", " << y << " and " << z << " the red box represents a scratch on the vial!" << endl;
+
+			for (int i = 0; i < featVec1.size(); i++)
+			{
+				if (featVec1[i].circularity == circularityVec[o])
+				{
+					cv::drawContours(ContourIMG, G1contours, featVec1[i].contourIndex, cv::Scalar(0, 255, 0), 1);
+					scratch = featVec1[i].contourIndex;
+					vector<cv::Rect> boundscratch(featVec1.size());
+					for (int i = 0; i < featVec1.size(); i++)
+					{
+						boundscratch[i] = boundingRect(cv::Mat(G1contours[scratch]));
+					}
+					for (int i = 0; i < featVec1.size(); i++)
+					{
+						cv::Scalar red = cv::Scalar(0, 0, 255);
+						rectangle(drawingfinal, boundscratch[i].tl(), boundscratch[i].br(), red, 1, 8, 0);
+						cv::putText(drawingfinal, "Scratch", cv::Point(boundscratch[i].x, boundscratch[i].y + boundscratch[i].width + 25), cv::FONT_HERSHEY_SIMPLEX, 1, CV_RGB(255, 0, 0), 2);
+					}
+				}
+			}
+		}
+
+		everything = rotated + drawingfinal;
+	}
+	imshow("Final Result", everything);
+	cv::waitKey(0);
+	cv::destroyAllWindows;	
+}
+
+void inspectVial::loadDataTop() {
+	std::ifstream in("datatop.txt");
+	int numRows = 1;
+	int numCols = 3;
 	for (int i = 0; i < numRows; i++) {
 		for (int j = 0; j < numCols; j++) {
-			//The area was devided by the perimeter, yielding a new feature: ratio.
-			//This data is stored in the array euro;
-			in >> euro[i][j];
+			in >> top[i][j];
 		}
-		//Here the data is normalized, since the circularity value varies between
-		//0.7 and 1, and the ratio between 25-50.
-		double value = euro[i][1] / 45;
-		euro[i][1] = value;
-		double value2 = ((euro[i][0] - 0.827443) / (0.900933 - 0.827443));
-		euro[i][0] = value2;
 	}
-	//The same logic is applied to the other loadData functions, just for the kroner and the pence.
+	for (int i = 0; i < numRows; i++) {
+		for (int j = 0; j < numCols; j++) {
+			cout << top[i][j] << endl;
+		}
+		cout << " " << endl;
+	}
 }
-};*/
+
+void inspectVial::loadDataBottom() {
+	std::ifstream in("databottom.txt");
+	int numRows = 1;
+	int numCols = 3;
+	for (int i = 0; i < numRows; i++) {
+		for (int j = 0; j < numCols; j++) {
+			in >> bottom[i][j];
+		}
+	}
+	for (int i = 0; i < numRows; i++) {
+		for (int j = 0; j < numCols; j++) {
+			cout << bottom[i][j] << endl;
+		}
+		cout << " " << endl;
+	}
+}
+
+void inspectVial::loadDataCrack() {
+	std::ifstream in("datacrack.txt");
+	int numRows = 1;
+	int numCols = 3;
+	for (int i = 0; i < numRows; i++) {
+		for (int j = 0; j < numCols; j++) {
+			in >> crack[i][j];
+		}
+	}
+	for (int i = 0; i < numRows; i++) {
+		for (int j = 0; j < numCols; j++) {
+			cout << crack[i][j] << endl;
+		}
+		cout << " " << endl;
+	}
+}
+
+void inspectVial::loadDataScratch() {
+	std::ifstream in("datascratch.txt");
+	int numRows = 1;
+	int numCols = 3;
+	for (int i = 0; i < numRows; i++) {
+		for (int j = 0; j < numCols; j++) {
+			in >> scratch[i][j];
+		}
+	}
+	for (int i = 0; i < numRows; i++) {
+		for (int j = 0; j < numCols; j++) {
+			cout << scratch[i][j] << endl;
+		}
+		cout << " " << endl;
+	}
+}

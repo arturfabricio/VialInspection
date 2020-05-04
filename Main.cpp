@@ -1,5 +1,5 @@
 //Vial and Crack Detection Algoryhtm - Group 464 ROB4
-//V2.0 - 28/4/2020
+//V3.0 - 04/05/2020
 
 // Morphology bounding box - doesn't work for all of them 
 // Crack detection - most important thing rn 
@@ -19,11 +19,16 @@ using namespace std;
 
 void main()
 {
-	collectData data;
+	inspectVial data;
+	//data.loadDataTop();
+	//data.loadDataBottom();
+	//data.loadDataCrack();
+	//data.loadDataScratch();
+	/*
 	cout << "Vial 1" << endl;
 	data.alldata(data.vial1);
 	cout << "Vial 2" << endl;
-	data.alldata(data.vial2); 
+	data.alldata(data.vial2);
 	cout << "Vial 3" << endl;
 	data.alldata(data.vial3);
 	cout << "Vial 4" << endl;
@@ -142,6 +147,7 @@ void main()
 	data.alldata(data.vial64);
 	cout << "Vial 65" << endl;
 	data.alldata(data.vial65);
+	*/
 	cout << "Vial 66" << endl;
 	data.alldata(data.vial66);
 	cout << "Vial 67" << endl;
