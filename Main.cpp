@@ -1,8 +1,5 @@
 //Vial and Crack Detection Algoryhtm - Group 464 ROB4
-//V3.0 - 04/05/2020
-
-// Morphology bounding box - doesn't work for all of them 
-// Crack detection - most important thing rn 
+//V5.0 - 09/05/2020
 
 #include <iostream>
 #include <opencv2/core.hpp>
@@ -17,13 +14,30 @@
 using namespace cv;
 using namespace std;
 
+cv::Mat test1 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\9_2.png");
+cv::Mat test2 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\41_Color.png");
+cv::Mat test3 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\113_Color.png");
+cv::Mat test4 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\149_Color.png");
+cv::Mat test5 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\163_Color.png");
+
 void main()
 {
 	inspectVial data;
-	//data.loadDataTop();
-	//data.loadDataBottom();
-	//data.loadDataCrack();
-	//data.loadDataScratch();
+	data.loadDataTop();
+	data.loadDataBottom();
+	data.loadDataCrack();
+	data.loadDataScratch();
+	//data.alldata(test1);
+	//data.classify(test1);
+	//data.alldata(test2);
+	//data.classify(test2);
+	//data.alldata(test3);
+	//data.classify(test3);
+	//data.alldata(test4);
+	//data.classify(test4);
+	//data.alldata(test5);
+	//data.classify(test5);
+
 	/*
 	cout << "Vial 1" << endl;
 	data.alldata(data.vial1);
@@ -147,7 +161,6 @@ void main()
 	data.alldata(data.vial64);
 	cout << "Vial 65" << endl;
 	data.alldata(data.vial65);
-	*/
 	cout << "Vial 66" << endl;
 	data.alldata(data.vial66);
 	cout << "Vial 67" << endl;
@@ -442,4 +455,61 @@ void main()
 	data.alldata(data.vial211);
 	cout << "Vial 212" << endl;
 	data.alldata(data.vial212);
+	cout << "good1" << endl;
+	data.alldata(data.good1);
+	cout << "good2" << endl;
+	data.alldata(data.good2);
+	cout << "good3" << endl;
+	data.alldata(data.good3);
+	cout << "good5" << endl;
+	data.alldata(data.good5);
+	cout << "good6" << endl;
+	data.alldata(data.good6);
+	cout << "good7" << endl;
+	data.alldata(data.good7);
+	cout << "good8" << endl;
+	data.alldata(data.good8);
+	cout << "good9" << endl;
+	data.alldata(data.good9);
+	cout << "good10" << endl;
+	data.alldata(data.good10);
+	cout << "good11" << endl;
+	data.alldata(data.good11);
+	cout << "good12" << endl;
+	data.alldata(data.good12);
+	cout << "good13" << endl;
+	data.alldata(data.good13);
+	cout << "good14" << endl;
+	data.alldata(data.good14);
+	cout << "good15" << endl;
+	data.alldata(data.good15);
+	cout << "good16" << endl;
+	data.alldata(data.good16);
+	cout << "good17" << endl;
+	data.alldata(data.good17);
+	cout << "good18" << endl;
+	data.alldata(data.good18);
+	cout << "good19" << endl;
+	data.alldata(data.good19);
+	cout << "good20" << endl;
+	data.alldata(data.good20);
+	cout << "good21" << endl;
+	data.alldata(data.good21);
+	cout << "good22" << endl;
+	data.alldata(data.good22);
+	cout << "good23" << endl;
+	data.alldata(data.good23); 
+	cout << "good25" << endl;
+	data.alldata(data.good25);
+	cout << "good26" << endl;
+	data.alldata(data.good26);
+	cout << "good27" << endl;
+	data.alldata(data.good27);
+	cout << "good28" << endl;
+	data.alldata(data.good28);
+	cout << "good29" << endl;
+	data.alldata(data.good29);
+	cout << "good30" << endl;
+	data.alldata(data.good30);
+	*/
 }

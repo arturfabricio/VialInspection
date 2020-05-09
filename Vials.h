@@ -1,3 +1,6 @@
+//Vial and Crack Detection Algoryhtm - Group 464 ROB4
+//V5.0 - 09/05/2020
+
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
@@ -18,6 +21,9 @@ public:
 	void loadDataScratch();
 	void alldata(cv::Mat vial);
 	cv::Mat rotate(cv::Mat src, double angle);
+
+	cv::Mat vial_ROI;
+	cv::Mat ContourIMG;
 
 	cv::Mat vial1 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\1_1.png");
 	cv::Mat vial2 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\1_2.png");
@@ -227,12 +233,45 @@ public:
 	cv::Mat vial210 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\169_Color.png");
 	cv::Mat vial211 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\170_Color.png");
 	cv::Mat vial212 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\171_Color.png");
+	cv::Mat good1 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\1_Color.png");
+	cv::Mat good2 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\2_Color.png");
+	cv::Mat good3 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\3_Color.png");
+	cv::Mat good5 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\5_Color.png");
+	cv::Mat good6 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\6_Color.png");
+	cv::Mat good7 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\7_Color.png");
+	cv::Mat good8 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\8_Color.png");
+	cv::Mat good9 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\9_Color.png");
+	cv::Mat good10 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\10_Color.png");
+	cv::Mat good11 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\11_Color.png");
+	cv::Mat good12 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\12_Color.png");
+	cv::Mat good13 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\13_Color.png");
+	cv::Mat good14 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\14_Color.png");
+	cv::Mat good15 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\15_Color.png");
+	cv::Mat good16 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\16_Color.png");
+	cv::Mat good17 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\17_Color.png");
+	cv::Mat good18 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\18_Color.png");
+	cv::Mat good19 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\19_Color.png");
+	cv::Mat good20 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\20_Color.png");
+	cv::Mat good21 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\21_Color.png");
+	cv::Mat good22 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\22_Color.png");
+	cv::Mat good23 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\23_Color.png");
+	cv::Mat good25 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\25_Color.png");
+	cv::Mat good26 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\26_Color.png");
+	cv::Mat good27 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\27_Color.png");
+	cv::Mat good28 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\28_Color.png");
+	cv::Mat good29 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\29_Color.png");
+	cv::Mat good30 = cv::imread("C:\\Users\\artur\\Desktop\\Harmed\\Good\\30_Color.png");
 
 private:
-	float top[1][3];
-	float bottom[1][3];
-	float crack[1][3];
-	float scratch[1][3];
+	float topinit[129][4];
+	float bottominit[230][4];
+	float crackinit[216][4];
+	float scratchinit[49][4];
+
+	float top[129][3];
+	float bottom[230][3];
+	float crack[216][3];
+	float scratch[49][3];
 
 	struct boundingBox
 	{
@@ -253,19 +292,12 @@ private:
 		float elongation;
 	};
 
+	vector<vector<cv::Point>> G1contours;
 	vector<Vialfeatures> featVec1;
-
 	vector<int> areaVec;
 	vector<int> perimeterVec;
 	vector<float> circularityVec;
 	vector<float> elongationVec;
-
-	cv::Mat ContourIMG;
-	cv::Mat drawingfinal;
-	cv::Mat rotated;
-	cv::Mat everything;
-	vector<vector<cv::Point>> G1contours;
-
 };
 
 #endif
