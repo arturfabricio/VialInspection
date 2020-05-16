@@ -22,12 +22,18 @@ void inspectVial::alldata(cv::Mat vial) {
 	if (vial.empty()) cout << "Failed loading image" << endl;
 	else cout << "Image Loaded succesfully" << endl;
 
-	cv::Mat grey, cadst, cdst, cadstth = cv::Mat(vial.size(), CV_8U);
+	cv::Mat grey, cadst, cadst1, cdst, cdst2, cadstth = cv::Mat(vial.size(), CV_8U);
 
 	cvtColor(vial, grey, cv::COLOR_BGR2GRAY);
-	threshold(grey, cadst, 20, 200, 1);
+
+	threshold(grey, cadst1, 20, 200, 1);
+
+	Canny(grey, cadst, 1, 255);
+	//cv::imshow("cadst", cadst);
+	//cv::waitKey(0);
+	//cv::destroyAllWindows;
+
 	cvtColor(grey, cdst, cv::COLOR_GRAY2BGR);
-	//Canny(vial, cdst, 20, 255, 3);	
 
 	vector<cv::Vec2f> lines;
 	vector<float> angles;
@@ -45,10 +51,14 @@ void inspectVial::alldata(cv::Mat vial) {
 		pt1.y = cvRound(y0 + 1000 * (a));
 		pt2.x = cvRound(x0 - 1000 * (-b));
 		pt2.y = cvRound(y0 - 1000 * (a));
-		//line(cdst, pt1, pt2, Scalar(0, 0, 255), 1, LINE_AA);
+		line(cdst, pt1, pt2, cv::Scalar(0, 0, 255), 1, cv::LINE_AA);
 		angles.push_back(lines[i][1]);
 		rhovec.push_back(lines[i][0]);
 	}
+
+	//cv::imshow("cdst", cdst);
+	//cv::waitKey(0);
+	//cv::destroyAllWindows;
 
 	float angle;
 	float anglemax;
@@ -59,13 +69,21 @@ void inspectVial::alldata(cv::Mat vial) {
 	int index = INT_MAX;
 	angle = INT_MAX;
 	anglemin = *min_element(angles.begin(), angles.end());
+	//cout << "Smallest angle " << anglemin << endl;
 	angleminindex = min_element(angles.begin(), angles.end()) - angles.begin();
 	anglemax = *max_element(angles.begin(), angles.end());
+	//cout << "Biggest angle " << anglemax << endl;
 	anglemaxindex = max_element(angles.begin(), angles.end()) - angles.begin();
 
-	if (anglemax > 3) {
+	if (anglemin == 0 && anglemax < 3.2) {
+		angle = 0;
+		index = anglemaxindex;
+		slope = angle;
+	}
+
+	if (anglemax > 3.2) {
 		angle = anglemax;
-		anglemin = 3.1;
+		anglemin = 3.2;
 		index = anglemaxindex;
 		slope = angle;
 	}
@@ -77,7 +95,7 @@ void inspectVial::alldata(cv::Mat vial) {
 		angle = angle + 3.14159265;
 	};
 
-	if (anglemin < 3) {
+	if (anglemin < 3.2) {
 		angle = anglemin;
 		index = angleminindex;
 		slope = angle;
@@ -85,7 +103,7 @@ void inspectVial::alldata(cv::Mat vial) {
 
 	if (angle == 0) {
 		vector<float>::iterator it = remove(angles.begin(), angles.end(), angle);
-		angles.erase(it, angles.end());
+	    angles.erase(it, angles.end());
 		angle = *min_element(angles.begin(), angles.end());
 		slope = angle;
 	};
@@ -95,44 +113,7 @@ void inspectVial::alldata(cv::Mat vial) {
 		slope = angle;
 	}
 
-	for (int i = 0; i < lines.size(); i++)
-	{
-		if (lines[i][1] == slope) {
-			rhos.push_back(lines[i][0]);
-		}
-	}
-
-	vector<int> pos;
-	vector<int> neg;
-	vector<int> good;
-	vector<int> rhos_final;
-
-	for (int i = 0; i < rhos.size(); i++) {
-		if (rhos[i] > -320) {
-			pos.push_back(rhos[i]);
-		}
-		if (rhos[i] < -320) {
-			neg.push_back(rhos[i]);
-		}
-	}
-
-	int rhoplus = *min_element(pos.begin(), pos.end());
-	int rhonegative = *max_element(neg.begin(), neg.end());
-
-	rhos_final.push_back(rhoplus);
-	rhos_final.push_back(rhonegative);
-
-	for (int i = 0; i < rhos_final.size(); i++)
-	{
-		cv::Point pt1, pt2;
-		double a = cos(slope), b = sin(slope);
-		double x0 = a * rhos_final[i], y0 = b * rhos_final[i];
-		pt1.x = cvRound(x0 + 1000 * (-b));
-		pt1.y = cvRound(y0 + 1000 * (a));
-		pt2.x = cvRound(x0 - 1000 * (-b));
-		pt2.y = cvRound(y0 - 1000 * (a));
-		line(cdst, pt1, pt2, cv::Scalar(0, 0, 255), 1, cv::LINE_AA);
-	}
+	//cout << "Rotation angle " << angle << endl;
 
 	float degrees = angle * (180.0 / 3.141592653589793238463);
 	cv::Mat rotated;
@@ -144,23 +125,29 @@ void inspectVial::alldata(cv::Mat vial) {
 
 	//Morphology for the top-bounding box.
 	cv::Mat rotated_Grey = cv::Mat(rotated.size(), CV_8U);
-	cv::Mat rotated_Thresh1 = cv::Mat(rotated.size(), CV_8U);
 	cv::Mat rotated_Thresh2 = cv::Mat(rotated.size(), CV_8U);
 	cv::Mat rotated_background = cv::Mat(rotated.size(), CV_8UC3);
-	cv::Mat rotated_subt = cv::Mat(rotated.size(), CV_8UC3);
 
 	cvtColor(rotated, rotated_Grey, cv::COLOR_BGR2GRAY);
+	//imshow("rotated_Grey", rotated_Grey);
+
 	medianBlur(rotated_Grey, rotated_background, 7);
-	threshold(rotated_background, rotated_Thresh1, 24, 255, cv::THRESH_BINARY_INV);
-	threshold(rotated_background, rotated_Thresh2, 46, 255, cv::THRESH_BINARY);
-	subtract(rotated_Thresh2, rotated_Thresh1, rotated_subt);
+	//imshow("rotated_background", rotated_background);
+
+	threshold(rotated_background, rotated_Thresh2, 65, 255, cv::THRESH_BINARY); //46
+	//imshow("rotated_Thresh2", rotated_Thresh2);
 
 	cv::Mat rotated_morph1 = cv::Mat(rotated.size(), CV_8U);
-	cv::Mat ElemDilateRotated = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 9));
-	cv::morphologyEx(rotated_subt, rotated_morph1, cv::MORPH_DILATE, ElemDilateRotated);
+	cv::Mat ElemDilateRotated = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9, 9));
+	cv::morphologyEx(rotated_Thresh2, rotated_morph1, cv::MORPH_DILATE, ElemDilateRotated);
 
 	cv::Rect ROI_Morph = cv::Rect(140, 59, 365, 222); //113, 31, 422, 174
+
 	cv::Mat contour_ROI = rotated_morph1(ROI_Morph);
+	//cv::imshow("contour_ROI", contour_ROI);
+	//cv::waitKey(0);
+	//cv::destroyAllWindows;
+
 	cv::Mat Contour = cv::Mat(contour_ROI.size(), CV_8U);
 	cv::Mat ContourBig = cv::Mat(rotated.size(), CV_8U);
 	vector<vector<cv::Point>> GcontoursTop;
@@ -194,7 +181,7 @@ void inspectVial::alldata(cv::Mat vial) {
 			cv::RotatedRect box = minAreaRect(GcontoursTop2[i]);
 			G.elongation = max(box.size.width / box.size.height, box.size.height / box.size.width);
 
-			//cout <<"solve this "<< "G.Area:" << G.area << "; G.Perimeter:" << G.perimeter << "; G.Circularity:" << G.circularity << "; G.Cracks:" << G.hasCrack << "; G.Elongation:" << G.elongation << endl;
+			//cout <<"Top1 "<< "G.Area:" << G.area << "; G.Perimeter:" << G.perimeter << "; G.Circularity:" << G.circularity << "; G.Cracks:" << G.hasCrack << "; G.Elongation:" << G.elongation << endl;
 
 			circVecTop.push_back(G.circularity);
 		}
@@ -214,7 +201,7 @@ void inspectVial::alldata(cv::Mat vial) {
 			cv::RotatedRect box = minAreaRect(GcontoursTop[i]);
 			G.elongation = max(box.size.width / box.size.height, box.size.height / box.size.width);
 
-			//cout << "G.Area:" << G.area << "; G.Perimeter:" << G.perimeter << "; G.Circularity:" << G.circularity << "; G.Cracks:" << G.hasCrack << "; G.Elongation:" << G.elongation << endl;
+			//cout << "Top2 " << "G.Area:" << G.area << "; G.Perimeter:" << G.perimeter << "; G.Circularity:" << G.circularity << "; G.Cracks:" << G.hasCrack << "; G.Elongation:" << G.elongation << endl;
 
 			featVecTop.push_back(G);
 		}
@@ -270,7 +257,7 @@ void inspectVial::alldata(cv::Mat vial) {
 	//Morphology for the bottom-bounding box.
 	cv::Mat cadstmorph1 = cv::Mat(rotated.size(), CV_8U);
 	cv::Mat cElemOpen = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(5, 5));
-	cv::morphologyEx(cadst, cadstmorph1, cv::MORPH_OPEN, cElemOpen);
+	cv::morphologyEx(cadst1, cadstmorph1, cv::MORPH_OPEN, cElemOpen);
 
 	cv::Mat cadstmorph2 = cv::Mat(rotated.size(), CV_8U);
 	cv::Mat cElemClose = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(22, 22));
@@ -282,6 +269,10 @@ void inspectVial::alldata(cv::Mat vial) {
 
 	cv::Rect ROI_Morph2 = cv::Rect(188, 305, 259, 85); //155, 317, 315, 132
 	cv::Mat contour_ROI2 = cadstmorph3(ROI_Morph2);
+	//cv::imshow("contour_ROI2", contour_ROI2);
+	//cv::waitKey(0);
+	//cv::destroyAllWindows;
+
 	cv::Mat Contour2 = cv::Mat(contour_ROI2.size(), CV_8U);
 	cv::Mat ContourBig2 = cv::Mat(rotated.size(), CV_8U);
 	vector<vector<cv::Point>> GcontoursBot;
@@ -318,7 +309,7 @@ void inspectVial::alldata(cv::Mat vial) {
 			cv::RotatedRect box = minAreaRect(GcontoursBot2[i]);
 			F.elongation = max(box.size.width / box.size.height, box.size.height / box.size.width);
 
-			//cout << "Circularity Aquisition" << "G.Area:" << F.area << "; G.Perimeter:" << F.perimeter << "; G.Circularity:" << F.circularity << "; G.Cracks:" << F.hasCrack << "; G.Elongation:" << F.elongation << endl;
+			//cout << "Bot1 " << "G.Area:" << F.area << "; G.Perimeter:" << F.perimeter << "; G.Circularity:" << F.circularity << "; G.Cracks:" << F.hasCrack << "; G.Elongation:" << F.elongation << endl;
 
 			VecBot[i][0] = F.circularity;
 			VecBot[i][1] = F.area;
@@ -326,7 +317,7 @@ void inspectVial::alldata(cv::Mat vial) {
 	}
 
 	for (int i = 0; i < 6; i++) {
-		if (VecBot[i][1] > 19 && VecBot[i][1] < 300) {
+		if (VecBot[i][1] > 19 && VecBot[i][1] < 390) {
 			circVecBot.push_back(VecBot[i][0]);
 		}
 	}
@@ -345,7 +336,7 @@ void inspectVial::alldata(cv::Mat vial) {
 			cv::RotatedRect box = minAreaRect(GcontoursBot[i]);
 			F.elongation = max(box.size.width / box.size.height, box.size.height / box.size.width);
 
-			//cout << "Bot " << "G.Area:" << F.area << "; G.Perimeter:" << F.perimeter << "; G.Circularity:" << F.circularity << "; G.Cracks:" << F.hasCrack << "; G.Elongation:" << F.elongation << endl;
+			//cout << "Bot2 " << "G.Area:" << F.area << "; G.Perimeter:" << F.perimeter << "; G.Circularity:" << F.circularity << "; G.Cracks:" << F.hasCrack << "; G.Elongation:" << F.elongation << endl;
 
 			featVecBot.push_back(F);
 		}
@@ -396,6 +387,7 @@ void inspectVial::alldata(cv::Mat vial) {
 	//Defining Region Of Interest (ROI):
 	cv::Rect ROI = cv::Rect(G.x, G.y, G.w, G.h);
 	cv::Mat vial_ROI = rotated(ROI);
+
 	cv::Mat Grayscale = cv::Mat(vial_ROI.size(), CV_8U);
 	cv::Mat vial_Contrast = cv::Mat(vial_ROI.size(), CV_8U);
 	cv::Mat vial_Subt = cv::Mat(vial_ROI.size(), CV_8U);
@@ -431,6 +423,7 @@ void inspectVial::alldata(cv::Mat vial) {
 	cv::morphologyEx(vial_morph1, vial_morph2, cv::MORPH_ERODE, ElemErode1);
 	vector<cv::Vec4i> hierarchy1;
 
+
 	cv::Mat GContour1 = cv::Mat(vial_ROI.size(), CV_8U);
 	cv::Mat ContourIMG1 = cv::Mat(vial_ROI.size(), CV_8U);
 	cv::findContours(vial_morph2, G1contours, hierarchy1, cv::RETR_TREE, cv::CHAIN_APPROX_NONE);
@@ -450,7 +443,7 @@ void inspectVial::alldata(cv::Mat vial) {
 			cv::RotatedRect box = minAreaRect(G1contours[i]);
 			G1.elongation = max(box.size.width / box.size.height, box.size.height / box.size.width);
 
-			//cout << "G1.Area:" << G1.area << "; G1.Perimeter:" << G1.perimeter << "; G1.Circularity:" << G1.circularity << "; G1.Cracks:" << G1.hasCrack << "; G1.Elongation:" << G1.elongation << endl;
+			cout << "G1.Area:" << G1.area << "; G1.Perimeter:" << G1.perimeter << "; G1.Circularity:" << G1.circularity << "; G1.Cracks:" << G1.hasCrack << "; G1.Elongation:" << G1.elongation << endl;
 			featVec1.push_back(G1);
 
 			if (G1.area > 0 && G1.perimeter > 0) {
@@ -531,9 +524,12 @@ void inspectVial::alldata(cv::Mat vial) {
 	imshow("Bot Contour", drawing1);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
+	*/
 	imshow("ROI Image", vial_ROI);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
+	/*
+	imwrite("C:\\Users\\artur\\Desktop\\vial_ROI.jpg", vial_ROI);
 	imshow("Median Blur", medianBlur);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
@@ -555,13 +551,14 @@ void inspectVial::alldata(cv::Mat vial) {
 	imshow("Contours IMG", ContourIMG);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
+		*/
 	imshow("Contours1", GContour1);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
-		*/
 		//imshow("Contours IMG1", ContourIMG1);
 		//waitKey(0);
 		//destroyAllWindows;
+
 }
 
 void inspectVial::classify(cv::Mat vial) {
@@ -694,13 +691,11 @@ void inspectVial::classify(cv::Mat vial) {
 
 	cvtColor(rotated, rotated_Grey, cv::COLOR_BGR2GRAY);
 	medianBlur(rotated_Grey, rotated_background, 7);
-	threshold(rotated_background, rotated_Thresh1, 24, 255, cv::THRESH_BINARY_INV);
-	threshold(rotated_background, rotated_Thresh2, 46, 255, cv::THRESH_BINARY);
-	subtract(rotated_Thresh2, rotated_Thresh1, rotated_subt);
+	threshold(rotated_background, rotated_Thresh2, 50, 255, cv::THRESH_BINARY);
 
 	cv::Mat rotated_morph1 = cv::Mat(rotated.size(), CV_8U);
 	cv::Mat ElemDilateRotated = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(5, 9));
-	cv::morphologyEx(rotated_subt, rotated_morph1, cv::MORPH_DILATE, ElemDilateRotated);
+	cv::morphologyEx(rotated_Thresh2, rotated_morph1, cv::MORPH_DILATE, ElemDilateRotated);
 
 	cv::Rect ROI_Morph = cv::Rect(140, 59, 365, 222); //113, 31, 422, 174
 	cv::Mat contour_ROI = rotated_morph1(ROI_Morph);
@@ -869,7 +864,7 @@ void inspectVial::classify(cv::Mat vial) {
 	}
 
 	for (int i = 0; i < 6; i++) {
-		if (VecBot[i][1] > 19 && VecBot[i][1] < 300) {
+		if (VecBot[i][1] > 19 && VecBot[i][1] < 390) {
 			circVecBot.push_back(VecBot[i][0]);
 		}
 	}
@@ -939,8 +934,11 @@ void inspectVial::classify(cv::Mat vial) {
 	cv::Rect ROI = cv::Rect(G.x, G.y, G.w, G.h);
 	cv::Mat vial_ROI = rotated(ROI);
 
-	int k;
+	int k = 8;
+	cout << "The algorithm will look at the " << k << " nearest neighbours." << endl;
 
+
+	/*
 	cout << "To how many neighbours would you like to look at? (Choose a number between 1 and 11): ";
 	cin >> k;
 	cout << " " << endl;
@@ -953,6 +951,7 @@ void inspectVial::classify(cv::Mat vial) {
 		cout << "The algorithm will look at the " << k << " nearest neighbours." << endl;
 		cout << "  " << endl;
 	}
+	*/
 
 	//After that we enter in a for loop for each BLOB previously detected.
 	for (int o = 0; o < areaVec.size(); o++) {
@@ -1394,7 +1393,7 @@ void inspectVial::classify(cv::Mat vial) {
 		top = bottom = crack = scratch = INT_MAX;
 
 		if (topcount > bottomcount && topcount > crackcount && topcount > scratchcount) {
-			cout << "For values " << x << ", " << y << " and " << z << " the green box represents the top of the vial!" << endl;
+			//cout << "For values " << x << ", " << y << " and " << z << " the green box represents the top of the vial!" << endl;
 
 			for (int i = 0; i < featVec1.size(); i++)
 			{
@@ -1410,8 +1409,8 @@ void inspectVial::classify(cv::Mat vial) {
 					for (int i = 0; i < featVec1.size(); i++)
 					{
 						cv::Scalar green = cv::Scalar(0, 255, 0);
-						rectangle(drawingfinal, boundtop[i].tl() + cv::Point(G.x, G.y), boundtop[i].br() + cv::Point(G.x, G.y), green, 1, 8, 0);
-						cv::putText(drawingfinal, "Top", cv::Point(boundtop[i].x + G.x, boundtop[i].y + G.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1.7);
+						//rectangle(drawingfinal, boundtop[i].tl() + cv::Point(G.x, G.y), boundtop[i].br() + cv::Point(G.x, G.y), green, 1, 8, 0);
+						//cv::putText(drawingfinal, "Top", cv::Point(boundtop[i].x + G.x, boundtop[i].y + G.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1.7);
 
 					}
 				}
@@ -1419,7 +1418,7 @@ void inspectVial::classify(cv::Mat vial) {
 		}
 
 		if (bottomcount > topcount && bottomcount > crackcount && bottomcount > scratchcount) {
-			cout << "For values " << x << ", " << y << " and " << z << " the green box represents the bottom of the vial!" << endl;
+			//cout << "For values " << x << ", " << y << " and " << z << " the green box represents the bottom of the vial!" << endl;
 
 			for (int i = 0; i < featVec1.size(); i++)
 			{
@@ -1435,15 +1434,15 @@ void inspectVial::classify(cv::Mat vial) {
 					for (int i = 0; i < featVec1.size(); i++)
 					{
 						cv::Scalar green = cv::Scalar(0, 255, 0);
-						rectangle(drawingfinal, boundbottom[i].tl() + cv::Point(G.x, G.y), boundbottom[i].br() + cv::Point(G.x, G.y), green, 1, 8, 0);
-						cv::putText(drawingfinal, "Bottom", cv::Point(boundbottom[i].x + G.x, boundbottom[i].y + G.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1.7);
+						//rectangle(drawingfinal, boundbottom[i].tl() + cv::Point(G.x, G.y), boundbottom[i].br() + cv::Point(G.x, G.y), green, 1, 8, 0);
+						//cv::putText(drawingfinal, "Bottom", cv::Point(boundbottom[i].x + G.x, boundbottom[i].y + G.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5, CV_RGB(0, 255, 0), 1.7);
 					}
 				}
 			}
 		}
 
 		if (crackcount > topcount && crackcount > bottomcount && crackcount > scratchcount) {
-			cout << "For values " << x << ", " << y << " and " << z << " the red box represents a crack on the vial!" << endl;
+			//cout << "For values " << x << ", " << y << " and " << z << " the red box represents a crack on the vial!" << endl;
 
 			for (int i = 0; i < featVec1.size(); i++)
 			{
@@ -1467,7 +1466,7 @@ void inspectVial::classify(cv::Mat vial) {
 		}
 
 		if (scratchcount > topcount && scratchcount > bottomcount && scratchcount > crackcount) {
-			cout << "For values " << x << ", " << y << " and " << z << " the red box represents a scratch on the vial!" << endl;
+			//cout << "For values " << x << ", " << y << " and " << z << " the red box represents a scratch on the vial!" << endl;
 
 			for (int i = 0; i < featVec1.size(); i++)
 			{
@@ -1495,6 +1494,8 @@ void inspectVial::classify(cv::Mat vial) {
 	imshow("Final Result", everything);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
+	featVec1.clear();
+	system("CLS");
 }
 
 void inspectVial::loadDataTop() {

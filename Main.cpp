@@ -14,19 +14,336 @@
 using namespace cv;
 using namespace std;
 
+/*
 cv::Mat test1 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\9_2.png");
 cv::Mat test2 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\41_Color.png");
 cv::Mat test3 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\113_Color.png");
 cv::Mat test4 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\149_Color.png");
 cv::Mat test5 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\163_Color.png");
+cv::Mat test6 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\4_Color.png");
+cv::Mat test7 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\24_Color.png");
+cv::Mat test8 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\46_Color.png");
+cv::Mat test9 = cv::imread("C:\\Users\\artur\\Desktop\\Test\\134_Color.png");
+*/
+
+//Vial 1 
+cv::Mat vial1_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\1_Color.png");
+cv::Mat vial1_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\2_Color.png");
+cv::Mat vial1_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\3_Color.png");
+cv::Mat vial1_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\4_Color.png");
+
+//Vial 2
+cv::Mat vial2_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\5_Color.png");
+cv::Mat vial2_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\6_Color.png");
+cv::Mat vial2_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\7_Color.png");
+cv::Mat vial2_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\8_Color.png");
+
+//Vial 3
+cv::Mat vial3_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\9_Color.png");
+cv::Mat vial3_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\10_Color.png");
+cv::Mat vial3_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\11_Color.png");
+cv::Mat vial3_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\12_Color.png");
+
+//Vial 4
+cv::Mat vial4_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\13_Color.png");
+cv::Mat vial4_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\14_Color.png");
+cv::Mat vial4_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\15_Color.png");
+cv::Mat vial4_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\16_Color.png");
+
+//Vial 5
+cv::Mat vial5_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\17_Color.png");
+cv::Mat vial5_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\18_Color.png");
+cv::Mat vial5_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\19_Color.png");
+cv::Mat vial5_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\20_Color.png");
+
+//Vial 6
+cv::Mat vial6_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\21_Color.png");
+cv::Mat vial6_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\22_Color.png");
+cv::Mat vial6_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\23_Color.png");
+cv::Mat vial6_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\24_Color.png");
+
+//Vial 7
+cv::Mat vial7_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\25_Color.png");
+cv::Mat vial7_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\26_Color.png");
+cv::Mat vial7_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\27_Color.png");
+cv::Mat vial7_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\28_Color.png");
+
+//Vial 8
+cv::Mat vial8_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\29_Color.png");
+cv::Mat vial8_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\30_Color.png");
+cv::Mat vial8_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\31_Color.png");
+cv::Mat vial8_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\32_Color.png");
+
+//Vial 9
+cv::Mat vial9_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\33_Color.png");
+cv::Mat vial9_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\34_Color.png");
+cv::Mat vial9_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\35_Color.png");
+cv::Mat vial9_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\36_Color.png");
+
+//Vial 10
+cv::Mat vial10_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\37_Color.png");
+cv::Mat vial10_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\38_Color.png");
+cv::Mat vial10_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\39_Color.png");
+cv::Mat vial10_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\40_Color.png");
+
+//Vial 11
+cv::Mat vial11_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\41_Color.png");
+cv::Mat vial11_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\42_Color.png");
+cv::Mat vial11_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\43_Color.png");
+cv::Mat vial11_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\44_Color.png");
+
+//Vial 12
+cv::Mat vial12_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\45_Color.png");
+cv::Mat vial12_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\46_Color.png");
+cv::Mat vial12_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\47_Color.png");
+cv::Mat vial12_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\48_Color.png");
+
+//Vial 13
+cv::Mat vial13_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\49_Color.png");
+cv::Mat vial13_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\50_Color.png");
+cv::Mat vial13_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\51_Color.png");
+cv::Mat vial13_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\52_Color.png");
+
+//Vial 14
+cv::Mat vial14_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\53_Color.png");
+cv::Mat vial14_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\54_Color.png");
+cv::Mat vial14_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\55_Color.png");
+cv::Mat vial14_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\56_Color.png");
+
+//Vial 15
+cv::Mat vial15_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\57_Color.png");
+cv::Mat vial15_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\58_Color.png");
+cv::Mat vial15_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\59_Color.png");
+cv::Mat vial15_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\60_Color.png");
+
+//Vial 16
+cv::Mat vial16_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\61_Color.png");
+cv::Mat vial16_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\62_Color.png");
+cv::Mat vial16_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\63_Color.png");
+cv::Mat vial16_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\64_Color.png");
+
+//Vial 17
+cv::Mat vial17_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\65_Color.png");
+cv::Mat vial17_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\66_Color.png");
+cv::Mat vial17_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\67_Color.png");
+cv::Mat vial17_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\68_Color.png");
+
+//Vial 18
+cv::Mat vial18_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\69_Color.png");
+cv::Mat vial18_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\70_Color.png");
+cv::Mat vial18_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\71_Color.png");
+cv::Mat vial18_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\72_Color.png");
+
+//Vial 19
+cv::Mat vial19_1 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\75_Color.png");
+cv::Mat vial19_2 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\76_Color.png");
+cv::Mat vial19_3 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\76_Color.png");
+cv::Mat vial19_4 = cv::imread("C:\\Users\\artur\\Desktop\\TestData\\76_Color.png");
 
 void main()
 {
 	inspectVial data;
+
+
 	data.loadDataTop();
 	data.loadDataBottom();
 	data.loadDataCrack();
 	data.loadDataScratch();
+
+
+	cout << "Vial Number 1" << endl;
+	data.alldata(vial1_1);
+	data.classify(vial1_1);
+	data.alldata(vial1_2);
+	data.classify(vial1_2);
+	data.alldata(vial1_3);
+	data.classify(vial1_3);
+	data.alldata(vial1_4);
+	data.classify(vial1_4);
+
+	/*
+	cout << "Vial Number 2" << endl;
+	data.alldata(vial2_1);
+	data.classify(vial2_1);
+	data.alldata(vial2_2);
+	data.classify(vial2_2);
+	data.alldata(vial2_3);
+	data.classify(vial2_3);
+	data.alldata(vial2_4);
+	data.classify(vial2_4);
+
+	cout << "Vial Number 3" << endl;
+	data.alldata(vial3_1);
+	data.classify(vial3_1);
+	data.alldata(vial3_2);
+	data.classify(vial3_2);
+	data.alldata(vial3_3);
+	data.classify(vial3_3);
+	data.alldata(vial3_4);
+	data.classify(vial3_4);
+
+	cout << "Vial Number 4" << endl;
+	data.alldata(vial4_1);
+	data.classify(vial4_1);
+	data.alldata(vial4_2);
+	data.classify(vial4_2);
+	data.alldata(vial4_3);
+	data.classify(vial4_3);
+	data.alldata(vial4_4);
+	data.classify(vial4_4);
+
+	cout << "Vial Number 5" << endl;
+	data.alldata(vial5_1);
+	data.classify(vial5_1);
+	data.alldata(vial5_2);
+	data.classify(vial5_2);
+	data.alldata(vial5_3);
+	data.classify(vial5_3);
+	data.alldata(vial5_4);
+	data.classify(vial5_4);
+
+	cout << "Vial Number 6" << endl;
+	data.alldata(vial6_1);
+	data.classify(vial6_1);
+	data.alldata(vial6_2);
+	data.classify(vial6_2);
+	data.alldata(vial6_3);
+	data.classify(vial6_3);
+	data.alldata(vial6_4);
+	data.classify(vial6_4);
+
+	cout << "Vial Number 7" << endl;
+	data.alldata(vial7_1);
+	data.classify(vial7_1);
+	data.alldata(vial7_2);
+	data.classify(vial7_2);
+	data.alldata(vial7_3);
+	data.classify(vial7_3);
+	data.alldata(vial7_4);
+	data.classify(vial7_4);
+
+	cout << "Vial Number 8" << endl;
+	data.alldata(vial8_1);
+	data.classify(vial8_1);
+	data.alldata(vial8_2);
+	data.classify(vial8_2);
+	data.alldata(vial8_3);
+	data.classify(vial8_3);
+	data.alldata(vial8_4);
+	data.classify(vial8_4);
+
+	cout << "Vial Number 9" << endl;
+	data.alldata(vial9_1);
+	data.classify(vial9_1);
+	data.alldata(vial9_2);
+	data.classify(vial9_2);
+	data.alldata(vial9_3);
+	data.classify(vial9_3);
+	data.alldata(vial9_4);
+	data.classify(vial9_4);
+
+	cout << "Vial Number 10" << endl;
+	data.alldata(vial10_1);
+	data.classify(vial10_1);
+	data.alldata(vial10_2);
+	data.classify(vial10_2);
+	data.alldata(vial10_3);
+	data.classify(vial10_3);
+	data.alldata(vial10_4);
+	data.classify(vial10_4);
+
+	cout << "Vial Number 11" << endl;
+	data.alldata(vial11_1);
+	data.classify(vial11_1);
+	data.alldata(vial11_2);
+	data.classify(vial11_2);
+	data.alldata(vial11_3);
+	data.classify(vial11_3);
+	data.alldata(vial11_4);
+	data.classify(vial11_4);
+
+	cout << "Vial Number 12" << endl;
+	data.alldata(vial12_1);
+	data.classify(vial12_1);
+	data.alldata(vial12_2);
+	data.classify(vial12_2);
+	data.alldata(vial12_3);
+	data.classify(vial12_3);
+	data.alldata(vial12_4);
+	data.classify(vial12_4);
+
+	cout << "Vial Number 13" << endl;
+	data.alldata(vial13_1);
+	data.classify(vial13_1);
+	data.alldata(vial13_2);
+	data.classify(vial13_2);
+	data.alldata(vial13_3);
+	data.classify(vial13_3);
+	data.alldata(vial13_4);
+	data.classify(vial13_4);
+
+	cout << "Vial Number 14" << endl;
+	data.alldata(vial14_1);
+	data.classify(vial14_1);
+	data.alldata(vial14_2);
+	data.classify(vial14_2);
+	data.alldata(vial14_3);
+	data.classify(vial14_3);
+	data.alldata(vial14_4);
+	data.classify(vial14_4);
+
+	cout << "Vial Number 15" << endl;
+	data.alldata(vial15_1);
+	data.classify(vial15_1);
+	data.alldata(vial15_2);
+	data.classify(vial15_2);
+	data.alldata(vial15_3);
+	data.classify(vial15_3);
+	data.alldata(vial15_4);
+	data.classify(vial15_4);
+
+	cout << "Vial Number 16" << endl;
+	data.alldata(vial16_1);
+	data.classify(vial16_1);
+	data.alldata(vial16_2);
+	data.classify(vial16_2);
+	data.alldata(vial16_3);
+	data.classify(vial16_3);
+	data.alldata(vial16_4);
+	data.classify(vial16_4);
+
+	cout << "Vial Number 17" << endl;
+	data.alldata(vial17_1);
+	data.classify(vial17_1);
+	data.alldata(vial17_2);
+	data.classify(vial17_2);
+	data.alldata(vial17_3);
+	data.classify(vial17_3);
+	data.alldata(vial17_4);
+	data.classify(vial17_4);
+
+	cout << "Vial Number 18" << endl;
+	data.alldata(vial18_1);
+	data.classify(vial18_1);
+	data.alldata(vial18_2);
+	data.classify(vial18_2);
+	data.alldata(vial18_3);
+	data.classify(vial18_3);
+	data.alldata(vial18_4);
+	data.classify(vial18_4);
+
+	cout << "Vial Number 19" << endl;
+	data.alldata(vial19_1);
+	data.classify(vial19_1);
+	data.alldata(vial19_2);
+	data.classify(vial19_2);
+	data.alldata(vial19_3);
+	data.classify(vial19_3);
+	data.alldata(vial19_4);
+	data.classify(vial19_4);
+	*/
+
+	/*
 	//data.alldata(test1);
 	//data.classify(test1);
 	//data.alldata(test2);
@@ -37,8 +354,15 @@ void main()
 	//data.classify(test4);
 	//data.alldata(test5);
 	//data.classify(test5);
+	//data.alldata(test6);
+	//data.classify(test6);
+	//data.alldata(test7);
+	//data.classify(test7);
+	//data.alldata(test8);
+	//data.classify(test8);
+	//data.alldata(test9);
+	//data.classify(test9);
 
-	/*
 	cout << "Vial 1" << endl;
 	data.alldata(data.vial1);
 	cout << "Vial 2" << endl;
@@ -126,7 +450,6 @@ void main()
 	cout << "Vial 47" << endl;
 	data.alldata(data.vial47);
 	cout << "Vial 48" << endl;
-	data.alldata(data.vial48);
 	cout << "Vial 49" << endl;
 	data.alldata(data.vial49);
 	cout << "Vial 50" << endl;
@@ -143,8 +466,8 @@ void main()
 	data.alldata(data.vial55);
 	cout << "Vial 56" << endl;
 	data.alldata(data.vial56);
-	cout << "Vial 57" << endl;
-	data.alldata(data.vial57);
+	//cout << "Vial 57" << endl;
+	//data.alldata(data.vial57);
 	cout << "Vial 58" << endl;
 	data.alldata(data.vial58);
 	cout << "Vial 59" << endl;
@@ -285,8 +608,8 @@ void main()
 	data.alldata(data.vial126);
 	cout << "Vial 127" << endl;
 	data.alldata(data.vial127);
-	cout << "Vial 128" << endl;
-	data.alldata(data.vial128);
+	//cout << "Vial 128" << endl;
+	//data.alldata(data.vial128);
 	cout << "Vial 129" << endl;
 	data.alldata(data.vial129);
 	cout << "Vial 130" << endl;
