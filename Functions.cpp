@@ -15,7 +15,7 @@ using namespace std;
 
 void inspectVial::loadDataTop() {
 	std::ifstream in("datatop.txt");
-	int numRows = 179;
+	int numRows = 204;
 	int numCols = 4;
 	for (int i = 0; i < numRows; i++) {
 		for (int j = 0; j < numCols; j++) {
@@ -52,7 +52,7 @@ void inspectVial::loadDataTop() {
 
 void inspectVial::loadDataBottom() {
 	std::ifstream in("databottom.txt");
-	int numRows = 290;
+	int numRows = 325;
 	int numCols = 4;
 	for (int i = 0; i < numRows; i++) {
 		for (int j = 0; j < numCols; j++) {
@@ -918,10 +918,10 @@ void inspectVial::inspection(cv::Mat vial) {
 	imshow("Erode", vial_morph2);
 	cv::waitKey(0);
 	cv::destroyAllWindows;
+	imshow("Contours1", GContour1);
+	cv::waitKey(0);
+	cv::destroyAllWindows;
 	*/
-	//imshow("Contours1", GContour1);
-	//cv::waitKey(0);
-	//cv::destroyAllWindows;
 }
 
 void inspectVial::classify(cv::Mat vial) {
@@ -968,14 +968,14 @@ void inspectVial::classify(cv::Mat vial) {
 		vector<double> all;
 		vector<int> allks;
 
-		for (int i = 0; i < 179; i++) {
+		for (int i = 0; i < 204; i++) {
 			double dist;
 			dist = sqrt(((x - top[i][0]) * (x - top[i][0])) + ((y - top[i][1]) * (y - top[i][1])) + ((z - top[i][2]) * (z - top[i][2])));
 			all.push_back(dist);
 			distancesTop.push_back(dist);
 		};
 
-		for (int i = 0; i < 290; i++) {
+		for (int i = 0; i < 325; i++) {
 			double dist;
 			dist = sqrt(((x - bottom[i][0]) * (x - bottom[i][0])) + ((y - bottom[i][1]) * (y - bottom[i][1])) + ((z - bottom[i][2]) * (z - bottom[i][2])));
 			all.push_back(dist);

@@ -380,13 +380,13 @@ public:
 	cv::Mat scratch97 = cv::imread("C:\\Users\\artur\\Desktop\\TrainingData\\Scratches\\99_Color.png");
 
 private:
-	float topinit[179][4];
-	float bottominit[290][4];
+	float topinit[204][4];
+	float bottominit[325][4];
 	float crackinit[216][4];
 	float scratchinit[143][4];
 
-	float top[179][3];
-	float bottom[290][3];
+	float top[204][3];
+	float bottom[325][3];
 	float crack[216][3];
 	float scratch[143][3];
 

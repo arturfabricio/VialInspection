@@ -982,7 +982,6 @@ void main()
 	data.alldata(vial15_3);
 	cout << "vial15_4" << endl;
 	data.alldata(vial15_4);
-			*/
 	cout << "vial16_1" << endl;
 	data.alldata(vial16_1);
 	cout << "vial16_2" << endl;
@@ -997,6 +996,7 @@ void main()
 	data.alldata(vial17_2);
 	cout << "vial17_3" << endl;
 	data.alldata(vial17_3);
+	*/
 	//cout << "vial17_4" << endl;
 	//data.alldata(vial17_4);
 	cout << "vial18_1" << endl;
@@ -1015,108 +1015,58 @@ void main()
 	data.alldata(vial19_3);
 	//cout << "vial19_4" << endl;
 	//data.alldata(vial19_4);
-
+	
 	//TestData//GoodTestData
 	cout << "goodtest1" << endl;
 	data.alldata(goodtest1);
-	cout << "goodtest2" << endl;
-	data.alldata(goodtest2);
 	cout << "goodtest3" << endl;
 	data.alldata(goodtest3);
-	cout << "goodtest4" << endl;
-	data.alldata(goodtest4);
 	cout << "goodtest5" << endl;
 	data.alldata(goodtest5);
-	cout << "goodtest6" << endl;
-	data.alldata(goodtest6);
 	cout << "goodtest7" << endl;
 	data.alldata(goodtest7);
-	cout << "goodtest8" << endl;
-	data.alldata(goodtest8);
 	cout << "goodtest9" << endl;
 	data.alldata(goodtest9);
-	cout << "goodtest10" << endl;
-	data.alldata(goodtest10);
 	cout << "goodtest11" << endl;
 	data.alldata(goodtest11);
-	cout << "goodtest12" << endl;
-	data.alldata(goodtest12);
 	cout << "goodtest13" << endl;
 	data.alldata(goodtest13);
-	cout << "goodtest14" << endl;
-	data.alldata(goodtest14);
 	cout << "goodtest15" << endl;
 	data.alldata(goodtest15);
-	cout << "goodtest16" << endl;
-	data.alldata(goodtest16);
 	cout << "goodtest17" << endl;
 	data.alldata(goodtest17);
-	cout << "goodtest18" << endl;
-	data.alldata(goodtest18);
 	cout << "goodtest19" << endl;
 	data.alldata(goodtest19);
-	cout << "goodtest20" << endl;
-	data.alldata(goodtest20);
 	cout << "goodtest21" << endl;
 	data.alldata(goodtest21);
-	cout << "goodtest22" << endl;
-	data.alldata(goodtest22);
 	cout << "goodtest23" << endl;
 	data.alldata(goodtest23);
-	cout << "goodtest24" << endl;
-	data.alldata(goodtest24);
 	cout << "goodtest25" << endl;
 	data.alldata(goodtest25);
-	cout << "goodtest26" << endl;
-	data.alldata(goodtest26);
 	cout << "goodtest27" << endl;
 	data.alldata(goodtest27);
-	cout << "goodtest28" << endl;
-	data.alldata(goodtest28);
 	cout << "goodtest29" << endl;
 	data.alldata(goodtest29);
-	cout << "goodtest30" << endl;
-	data.alldata(goodtest30);
 	cout << "goodtest31" << endl;
 	data.alldata(goodtest31);
-	cout << "goodtest32" << endl;
-	data.alldata(goodtest32);
 	cout << "goodtest33" << endl;
 	data.alldata(goodtest33);
-	cout << "goodtest34" << endl;
-	data.alldata(goodtest34);
 	cout << "goodtest35" << endl;
 	data.alldata(goodtest35);
-	cout << "goodtest36" << endl;
-	data.alldata(goodtest36);
 	cout << "goodtest37" << endl;
 	data.alldata(goodtest37);
-	cout << "goodtest38" << endl;
-	data.alldata(goodtest38);
 	cout << "goodtest39" << endl;
 	data.alldata(goodtest39);
-	cout << "goodtest40" << endl;
-	data.alldata(goodtest40);
 	cout << "goodtest41" << endl;
 	data.alldata(goodtest41);
-	cout << "goodtest42" << endl;
-	data.alldata(goodtest42);
 	cout << "goodtest43" << endl;
 	data.alldata(goodtest43);
-	cout << "goodtest44" << endl;
-	data.alldata(goodtest44);
 	cout << "goodtest45" << endl;
 	data.alldata(goodtest45);
-	cout << "goodtest46" << endl;
-	data.alldata(goodtest46);
 	cout << "goodtest47" << endl;
 	data.alldata(goodtest47);
-	cout << "goodtest48" << endl;
-	data.alldata(goodtest48);
 	cout << "goodtest49" << endl;
 	data.alldata(goodtest49);
-	cout << "goodtest50" << endl;
-	data.alldata(goodtest50);
 	
 	
 	/*
@@ -1140,3 +1090,56 @@ void main()
 	data.alldata(test9);
 	*/
 }
+
+/*
+cout << "goodtest2" << endl;
+data.alldata(goodtest2);
+cout << "goodtest4" << endl;
+data.alldata(goodtest4);
+cout << "goodtest6" << endl;
+data.alldata(goodtest6);
+cout << "goodtest8" << endl;
+data.alldata(goodtest8);
+cout << "goodtest10" << endl;
+data.alldata(goodtest10);
+cout << "goodtest12" << endl;
+data.alldata(goodtest12);
+cout << "goodtest14" << endl;
+data.alldata(goodtest14);
+cout << "goodtest16" << endl;
+data.alldata(goodtest16);
+cout << "goodtest18" << endl;
+data.alldata(goodtest18);
+cout << "goodtest20" << endl;
+data.alldata(goodtest20);
+cout << "goodtest22" << endl;
+data.alldata(goodtest22);
+cout << "goodtest24" << endl;
+data.alldata(goodtest24);
+cout << "goodtest26" << endl;
+data.alldata(goodtest26);
+cout << "goodtest28" << endl;
+data.alldata(goodtest28);
+cout << "goodtest30" << endl;
+data.alldata(goodtest30);
+cout << "goodtest32" << endl;
+data.alldata(goodtest32);
+cout << "goodtest34" << endl;
+data.alldata(goodtest34);
+cout << "goodtest36" << endl;
+data.alldata(goodtest36);
+cout << "goodtest38" << endl;
+data.alldata(goodtest38);
+cout << "goodtest40" << endl;
+data.alldata(goodtest40);
+cout << "goodtest42" << endl;
+data.alldata(goodtest42);
+cout << "goodtest44" << endl;
+data.alldata(goodtest44);
+cout << "goodtest46" << endl;
+data.alldata(goodtest46);
+cout << "goodtest48" << endl;
+data.alldata(goodtest48)
+cout << "goodtest50" << endl;
+data.alldata(goodtest50);
+*/
